@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import React, { useEffect, useState } from "react";
+import Title from "./components/Title";
+import "./index.css";
+import Summary from "./components/Summary";
+import axios from "axios";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+const App = () => {
+  const [data, setData] = useState([]);
+  const showDetails = async () => {
+    const res = await axios.get("https://api.tvmaze.com/search/shows?q=all");
+    setData(res.data);
+  };
+  useEffect(() => {
+    showDetails();
+  });
+  const [index, setIndex] = useState();
+  const IndexNumber = (index) => {
+    setIndex(index);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={<Title dataSecond={data} onSelect={IndexNumber}></Title>}
+          />
+          <Route
+            path="/summary"
+            element={<Summary dataFirst={data} sumIndex={index}></Summary>}
+          />
+        </Routes>
+      </Router>
+    </>
   );
-}
+};
 
 export default App;
